@@ -1,4 +1,3 @@
-import * as path from "path";
 import { AdobeScriptCommand, CommandStack } from "../api";
 
 const newCommandStack = (): CommandStack => {
