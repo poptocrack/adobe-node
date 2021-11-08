@@ -7,7 +7,7 @@
     "build": "tsc"
   },
   "bin": {
-    "adobe-broadcast": "dist/adobe-broadcast.js"
+    "adobe-broadcast": "dist/cmd/adobe-broadcast.js"
   },
   "keywords": [
     "adobe",

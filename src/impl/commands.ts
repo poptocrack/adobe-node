@@ -1,17 +1,15 @@
 import * as path from "path";
-import { AdobeScriptCommand, CommandStack } from "./api";
+import { AdobeScriptCommand, CommandStack } from "../api";
 
 const newCommandStack = (): CommandStack => {
 
     const stack: Map<string, AdobeScriptCommand[]> = new Map<string, AdobeScriptCommand[]>();
 
     return {
-        push: (data: AdobeScriptCommand): Promise<void> => new Promise(resolve => {
-            const commandName: string = path.basename(data.command).replace(/\.\w+$/,'');
-            if (!stack.has(commandName)) stack.set(commandName, []);
-            stack.get(commandName).push(data);
-            return resolve();
-        }),
+        push: (data: AdobeScriptCommand): void => {
+            if (!stack.has(data.command)) stack.set(data.command, []);
+            stack.get(data.command).push(data);
+        },
         resolve: (commandName: string): Promise<void> => {
             if (stack.has(commandName)) {
                 const command = stack.get(commandName).shift();
@@ -20,7 +18,6 @@ const newCommandStack = (): CommandStack => {
                     return command.resolve();
                 }
             }
-
             return Promise.resolve();
         }
     }
