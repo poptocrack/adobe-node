@@ -1,4 +1,4 @@
-import { AdobeScriptBuilder } from './api';
+import { AdobeScriptBuilder } from '../api';
 
 const commandTemplate: string = `
 var ___{{__command__}} = (function() {
@@ -27,8 +27,23 @@ const newAdobeScriptBuilder = (): AdobeScriptBuilder => {
       name = value;
       return builder;
     },
-    setVariables(value: string) {
-      vars = value;
+    setVariables(args: any) {
+      let list: string[] = [];
+        let arg: any;
+        for (let name in args) {
+            arg = args[name];
+
+            if (arg) {
+                list.push(`var ${name}=${arg.constructor.name === "String"
+                    ? `"${arg}"`
+                    : arg.constructor.name === "Array" ? `${JSON.stringify(arg)}`
+                        : arg};`);
+
+            } else {
+                list.push(`var ${name};`);
+            }
+        }
+      vars = `${list.length ? list.join('\n') : ''}`;
       return builder;
     },
     setBody(value: string) {

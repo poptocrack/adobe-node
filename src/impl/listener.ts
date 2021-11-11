@@ -1,4 +1,4 @@
-import { AdobeEventListener, BroadcastMessage } from './api';
+import { AdobeEventListener, BroadcastMessage } from '../api';
 import { Socket, Server, createServer } from 'net';
 
 const newAdobeAppListener = (host: string, port: number, callback: (commandName: string) => void): AdobeEventListener => {
@@ -10,13 +10,12 @@ const newAdobeAppListener = (host: string, port: number, callback: (commandName:
   function connectionListener(socket: Socket) {
     client = socket;
     socket.on('data', (buffer: Buffer) => {
-      const data: BroadcastMessage = JSON.parse(buffer.toString());
-      
-      if (callbacks.has(data.command)) {
-        callbacks.get(data.command)(data.stdout, data.stderr);
-      }
-
-      callback(data.command);
+        const data: BroadcastMessage = JSON.parse(buffer.toString());
+        const eventCallback: Function = callbacks.get(data.command);
+        if(eventCallback) {
+          callbacks.get(data.command)(data.stdout, data.stderr);
+        }
+        callback(data.command);
     });
   }
 
